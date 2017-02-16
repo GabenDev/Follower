@@ -1,0 +1,8 @@
+{
+  "callbackUrl": "http://localhost:3000/auth/callback",
+  "userInfoUrl": "https://graph.facebook.com/v2.8/me?access_token=__token__",
+  "userInfoNameField": "name",
+  "implicitGrantUrl": "https://www.facebook.com/v2.8/dialog/oauth?redirect_uri=__callbackUrl__&response_type=token&client_id=__clientId__&scope=__scopes__",
+  "clientId": "170353519812434",
+  "scopes": "email,user_about_me"
+}
