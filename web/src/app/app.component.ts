@@ -4,11 +4,10 @@ import "rxjs/add/operator/map";
 
 @Component({
     selector: 'app',
-    template: `
-<div class="container-fluid">
-    <router-outlet></router-outlet>
-</div>
-`
+    template: `<router-outlet></router-outlet>`
+//<div class="container-fluid">
+//</div>
+
 })
 export class AppComponent {
 }
