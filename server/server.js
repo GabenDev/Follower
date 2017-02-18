@@ -43,10 +43,20 @@ router.route('/user')
 
   // create a bear (accessed at POST http://localhost:8080/bears)
   .post(function (req, res) {
-    var user = new User().from(req);		// create a new instance of the Todo model
-    user.save(function (err) {
+      console.log('provider: ' + req.body.provider);
+      console.log('name: ' + req.body.name);
+      console.log('id: ' + req.body.id);
+
+      User.find({'provider' :  req.body.provider, 'id' : req.body.id}, function (err, dbUser) {
       handleError(err, res);
-      res.json(user);
+      console.log('dbUser: ' + dbUser);
+      if( dbUser == '') {
+        var user = new User().from(req);		// create a new instance of the Todo model
+        user.save(function (err) {
+          handleError(err, res);
+          res.json(user);
+        })
+      }
     })
   })
   // get all the bears (accessed at GET http://localhost:8080/api/bears)
@@ -55,7 +65,16 @@ router.route('/user')
       handleError(err, res);
       res.json(todos);
     });
-  });
+  })
+
+  // delete the bear with this id
+    .delete(function (req, res) {
+        User.remove({}, function (err, bear) {
+          if (err)
+            res.send(err);
+          res.json({});
+        })
+    });
 
 // on routes that end in /bears
 // ----------------------------------------------------
@@ -122,7 +141,10 @@ router.route('/todos/:todo_id')
   });
 
 function handleError(err, res) {
-  if (err) res.send(err);
+  if (err) {
+    console.log(err);
+    res.send(err);
+  }
 }
 
 // REGISTER OUR ROUTES -------------------------------

@@ -6,7 +6,7 @@
  */
 import {Injectable, EventEmitter} from "@angular/core";
 import {WindowService} from "./window.service";
-import {Http, Headers} from "@angular/http";
+import {Http, Headers, RequestOptions} from "@angular/http";
 import { AuthenticationService } from './AuthenticationService'
 
 @Injectable()
@@ -30,7 +30,7 @@ export class GoogleAuthenticationService extends AuthenticationService {
     }
 
     public name() : string {
-        return "Google";
+        return "GOOGLE";
     }
 
     public doLogin() {
@@ -67,7 +67,17 @@ export class GoogleAuthenticationService extends AuthenticationService {
 
                             this.windowHandle.close();
                             this.emitAuthStatus(true);
-                            this.fetchUserInfo();
+
+                            this.fetchUserInfoRequest().subscribe(info => {
+                                this.userInfo = info;
+                                this.saveUser().subscribe(
+                                    () => console.log('Authentication Complete')
+                                );
+                            }, err => {
+                                console.error("Failed to fetch user info:", err);
+                            });;
+
+
                         } else {
                             this.authenticated = false; // we got the login callback just fine, but there was no token
                             this.emitAuthStatus(false); // so we are still going to fail the login
@@ -85,6 +95,19 @@ export class GoogleAuthenticationService extends AuthenticationService {
                 }
             }
         }, this.intervalLength);
+    }
+
+    private saveUser() {
+        let headers = new Headers({ 'Content-Type': 'application/x-www-form-urlencoded' });
+        let options = new RequestOptions({ headers: headers });
+        var bodyDBUser = "name=" + this.userInfo.displayName + "&provider=" + this.name() + "&id=" + this.userInfo.id;
+        console.log('bodyDBUser: ' + bodyDBUser);
+        return this.http.post('http://localhost:8000/api/user', bodyDBUser, options)
+            .map(res => res.json());
+    }
+
+    private extractData() {
+
     }
 
     private parse(str) { // lifted from https://github.com/sindresorhus/query-string

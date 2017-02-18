@@ -42,6 +42,17 @@ export class AuthenticationService {
         console.log('Session has been cleared');
     }
 
+    protected fetchUserInfoRequest() {
+        if (this.token != null) {
+            var headers = new Headers();
+            headers.append('Authorization', `Bearer ${this.token}`);
+            //noinspection TypeScriptUnresolvedFunction
+
+            console.log(this.oAuthUserUrl);
+            return this.http.get(this.oAuthUserUrl, {headers: headers})
+                .map(res => res.json())
+        }
+    }
 
     protected fetchUserInfo() {
         if (this.token != null) {
