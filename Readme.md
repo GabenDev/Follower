@@ -3,13 +3,13 @@
 ## Requirements
 
 - Node and npm
--- curl -sL https://deb.nodesource.com/setup_7.x | sudo -E bash -
---* sudo apt-get install -y nodejs
+⋅⋅⋅ curl -sL https://deb.nodesource.com/setup_7.x | sudo -E bash -
+⋅⋅1. sudo apt-get install -y nodejs
 
--Cordova
+- Cordova
 ..* sudo npm install -g cordova
 
--Ionic
+- Ionic
 ..* sudo npm install -g ionic
 
 - MongoDB
