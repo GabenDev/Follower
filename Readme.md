@@ -10,10 +10,10 @@ The server is running in nodejs while client is based on ionic.
   ```
 
 - Cordova
-  `sudo npm install -g cordova`
+  ```sudo npm install -g cordova```
 
 - Ionic
-  `sudo npm install -g ionic`
+  ````sudo npm install -g ionic```
 
 - MongoDB
   ```
