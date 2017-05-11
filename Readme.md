@@ -23,7 +23,7 @@ The server is running in nodejs while client is based on ionic.
   ```
   sudo apt install mongodb-server
   sudo mkdir /data/db
-  sudo chown -R \`whoami\` /data
+  sudo chown -R `whoami` /data
   ```
 
 ## Install and Run Server
