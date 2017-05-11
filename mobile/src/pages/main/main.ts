@@ -17,7 +17,10 @@ export class MainPage {
         Facebook.api("/me?fields=id%2Cname&access_token="+v, ['public_profile'])
         .then((profile) => {
             this.userName = profile.name;
-          });
+          })
+        .catch((error) => {
+            console.log("Unable to login with facebbok");
+        }) ;
       });
     });
   }

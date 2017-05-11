@@ -1,5 +1,7 @@
-import { NgModule, ErrorHandler } from '@angular/core';
-import { IonicApp, IonicModule, IonicErrorHandler } from 'ionic-angular';
+import { NgModule } from '@angular/core';
+// , ErrorHandler
+import { IonicApp, IonicModule } from 'ionic-angular';
+//, IonicErrorHandler
 import { MyApp } from './app.component';
 import { HomePage } from '../pages/home/home';
 import { CloudSettings, CloudModule } from '@ionic/cloud-angular';
@@ -43,8 +45,8 @@ const cloudSettings: CloudSettings = {
       },
       'android': {
         'iconColor': '#343434',
-	'sound':true,
-	'vibrate':true
+	      'sound':true,
+      	'vibrate':true
       }
     }
   }

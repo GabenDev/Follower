@@ -33,6 +33,9 @@ export class MainPage {
             this.userName = profile.name;
             this.currentUser.name = profile.name;
             alert('Main Page: ' + this.userName);
+          })
+          .catch((error) => {
+            console.log("Unable to login with facebbok");
           });
       });
     });

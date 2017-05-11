@@ -1,9 +1,11 @@
-import { Component, ViewChild, ElementRef } from '@angular/core';
+import { Component } from '@angular/core';
+// , ViewChild, ElementRef
 import { NavController, AlertController, LoadingController, Loading } from 'ionic-angular';
 import { HomePage } from '../home/home';
 import { MainPage } from '../main/main';
-import { FacebookAuth, User } from '@ionic/cloud-angular';
-import { Geolocation } from 'ionic-native';
+import { FacebookAuth } from '@ionic/cloud-angular';
+// , User
+// import { Geolocation } from 'ionic-native';
 
 import { FacebookUsers } from '../../providers/facebook-users';
 import { FBUser } from '../../models/FBUser';

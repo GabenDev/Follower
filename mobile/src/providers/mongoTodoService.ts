@@ -13,7 +13,7 @@ import {Todo} from '../domain/todo';
 */
 @Injectable()
 export class MongoTodoService {
-  todosUrl = "http://192.168.0.2:8080/api/todos"
+  todosUrl = "http://localhost:8080/api/todos"
 
   constructor(public http: Http) {
     console.log('Hello TodoService Provider');

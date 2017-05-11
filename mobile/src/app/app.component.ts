@@ -1,8 +1,8 @@
 import { Component, ViewChild } from '@angular/core';
 import { Nav, Platform } from 'ionic-angular';
 import { StatusBar, Splashscreen } from 'ionic-native';
-import { LoginPage } from '../pages/login/login';
-import { MainPage } from '../pages/main/main';
+// import { LoginPage } from '../pages/login/login';
+// import { MainPage } from '../pages/main/main';
 
 import { TabsPage } from '../pages/tabs/tabs';
 

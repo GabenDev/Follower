@@ -4,7 +4,7 @@ import {Todo} from '../../domain/todo';
 import { TodoEditPage } from '../todo-edit/todo-edit';
 
 import {MongoTodoService} from '../../providers/mongoTodoService';
-import {FirebaseTodoService} from '../../providers/firebaseTodoService';
+// import {FirebaseTodoService} from '../../providers/firebaseTodoService';
 
 @Component({
     selector: 'page-items',
@@ -28,7 +28,7 @@ export class ItemsPage {
     if (todo === "") {
       return;
     }
-    var result = this.todoService.add(todo, this.todos).subscribe(response => {
+    this.todoService.add(todo, this.todos).subscribe(response => {
       this.loadTodos();
     });
   }
