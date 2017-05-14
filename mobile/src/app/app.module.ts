@@ -18,6 +18,8 @@ import { AngularFireModule } from 'angularfire2';
 
 import { AnimateItemSliding } from '../components/animate-item-sliding/animate-item-sliding';
 
+import {LocatorService} from "../providers/LocatorService";
+
 // AF2 Settings
 export const firebaseConfig = {
   apiKey: "AIzaSyCSjgYwi3EewjnCFCm564udfsurD5RIUkM",
@@ -76,7 +78,7 @@ const cloudSettings: CloudSettings = {
     MainPage,
     ItemsPage
   ],
-  providers: [FacebookUsers]
+  providers: [ FacebookUsers, LocatorService ]
   //providers: [{provide: ErrorHandler, useClass: IonicErrorHandler}, {FacebookUsers}]
 })
 export class AppModule {}

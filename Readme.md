@@ -25,6 +25,12 @@ The server is running in nodejs while client is based on ionic.
   sudo mkdir /data/db
   sudo chown -R `whoami` /data
   ```
+## Android
+  ```
+  Java: sudo apt install openjdk-8-jdk
+  Gradle: sudo apt install gradle
+  ```
+
 
 ## Install and Run Server
 - For details check the Readme under the server folder

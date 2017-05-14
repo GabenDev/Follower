@@ -17,9 +17,10 @@ app.use(bodyParser.json());
 var port = process.env.PORT || 8000; // set our port
 
 var mongoose = require('mongoose');
-mongoose.connect('mongodb://localhost/todo'); // connect to our database
+mongoose.connect('mongodb://localhost/locator'); // connect to our database
 var Todo = require('./app/models/todo');
 var User = require('./app/models/user');
+var Coordinate = require('./app/models/coordinate');
 
 // ROUTES FOR OUR API
 // =============================================================================
@@ -39,6 +40,29 @@ router.get('/', function (req, res) {
   res.json({message: 'hooray! welcome to our api!'});
 });
 
+router.route('/coords')
+    .post(function (req, res) {
+      console.log('Device: ' + req.body.devideId);
+      console.log('Longitude: ' + req.body.longitude);
+      console.log('Latitude: ' + req.body.latitude);
+
+      Coordinate.findOneAndUpdate({ 'deviceId' :  req.body.deviceId }, req.body, {upsert:true}, function(err, doc){
+        if (err) return res.send(500, { error: err });
+        return res.send("succesfully saved");
+      });
+    })
+    .get(function (req, res) {
+      Coordinate.find(function (err, coordinates) {
+        handleError(err, res);
+        res.json(coordinates);
+      });
+    })
+    .delete(function (req, res) {
+      Coordinate.findOneAndRemove({'_id' : req.body.id}, function (err,offer){
+        return res.send("Succesfully deleted: " + req.body.id);
+      });
+
+    });
 router.route('/user')
 
   // create a bear (accessed at POST http://localhost:8080/bears)
