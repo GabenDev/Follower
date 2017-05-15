@@ -48,8 +48,14 @@ router.route('/coords')
 
       Coordinate.findOneAndUpdate({ 'deviceId' :  req.body.deviceId }, req.body, {upsert:true}, function(err, doc){
         if (err) return res.send(500, { error: err });
-        return res.send("succesfully saved");
+        Coordinate.find(function (err, coordinates) {
+            handleError(err, res);
+            res.json(coordinates);
+        });
       });
+
+
+
     })
     .get(function (req, res) {
       Coordinate.find(function (err, coordinates) {
@@ -58,6 +64,7 @@ router.route('/coords')
       });
     })
     .delete(function (req, res) {
+      console.log(req.body);
       Coordinate.findOneAndRemove({'_id' : req.body.id}, function (err,offer){
         return res.send("Succesfully deleted: " + req.body.id);
       });

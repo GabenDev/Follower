@@ -9,8 +9,10 @@ import { Geolocation } from 'ionic-native';
 //import {MongoTodoService} from '../../providers/mongoTodoService';
 import {LocatorService} from '../../providers/LocatorService';
 
-import { Http, Headers } from '@angular/http';
-import {Coordinate} from '../../domain/coordinate';
+import { Http } from '@angular/http';
+import {Coordinate} from "../../domain/coordinate";
+import {Observable} from "rxjs/Observable";
+// import {Coordinate} from '../../domain/coordinate';
 
 declare var google;
 
@@ -25,9 +27,11 @@ export class MainPage {
   latitude = 20;
   @ViewChild('map') mapElement: ElementRef;
   map: any;
-  todosUrl = "http://213.222.183.206:8000/api/coords";
+  todosUrl = "http://10.0.12.219:8000/api/coords";
+  public coords:Coordinate[];
+  markers = [];
 
-  constructor(private locatorService : LocatorService, private nav : NavController) {
+  constructor(private locatorService : LocatorService, public http: Http, private nav : NavController) {
     Facebook.login(['email']).then((response:FacebookLoginResponse) => {
       Facebook.getAccessToken().then((v) => {
         Facebook.api("/me?fields=id%2Cname&access_token="+v, ['public_profile'])
@@ -39,38 +43,31 @@ export class MainPage {
         }) ;
       });
     });
-    this.getCoords();
-    Geolocation.getCurrentPosition().then((resp) => {
-      locatorService.save('G-Device', resp.coords.longitude, resp.coords.latitude);
-    });
-
     this.loadMap();
+    this.updateCoords();
+    setInterval(() => { this.updateCoords(); }, 5000);
+  }
 
-    //window.setInterval(this.updateCoords, 5000);
-
-    //Observable.interval(2000 * 60).subscribe(x => {
-    //  this.updateCoords();
-    //});
+  handleError(error) {
+    console.error(error);
+    alert("Error: " + error);
+    return Observable.throw(error.json().error || 'Server error');
   }
 
   public updateCoords() {
     Geolocation.getCurrentPosition().then((resp) => {
-      this.locatorService.save('G-Device', resp.coords.longitude, resp.coords.latitude);
-    //  //alert('Save position invoked');
-    //  //this.locatorService.save('G-Device', resp.coords.longitude, resp.coords.latitude);
-    //
-    //  let newCoordinate = new Coordinate('G-Device', resp.coords.longitude, resp.coords.latitude);
-    //  let body = JSON.stringify(newCoordinate);
-    //  alert('Save position invoked: ' + body);
-    //  let headers = new Headers({'Content-Type': 'application/json'});
-    //
-    //  this.http.post(this.todosUrl, body, {headers: headers});
-    //
+      this.longitude = resp.coords.longitude;
+      this.latitude = resp.coords.latitude;
+      this.locatorService.save('Gaben-Device', this.longitude, this.latitude)
+        .subscribe(data => {
+          this.coords = data;
+          this.addMarker();
+        });
     }).catch((error) => {
       alert('Error occured' + error);
       console.log('Error getting location', error);
     });
-
+    // this.refreshMarkers();
   }
 
   public addItem() {
@@ -97,7 +94,7 @@ export class MainPage {
       }
 
       this.map = new google.maps.Map(this.mapElement.nativeElement, mapOptions);
-      this.addMarker();
+      // this.addMarker();
     }).catch((error) => {
       console.log('Error getting location', error);
     });
@@ -115,17 +112,34 @@ export class MainPage {
   }
 
   addMarker(){
+    this.removeMarkers();
+    for (var i = 0; i < this.coords.length; i++) {
+      let marker = new google.maps.Marker({
+        map: this.map,
+        // animation: google.maps.Animation.BOUNCE,
+        position: new google.maps.LatLng(this.coords[i].latitude,this.coords[i].longitude)
+      });
+      this.markers.push(marker);
+      let content = "<h4>"+ this.coords[i].deviceId + "</h4>";
+      this.addInfoWindow(marker, content);
+    }
+  }
 
-    let marker = new google.maps.Marker({
-      map: this.map,
-      animation: google.maps.Animation.DROP,
-      position: this.map.getCenter()
-    });
+  removeMarkers() {
+    this.setMapOnAll(null);
+    this.markers = [];
+  }
 
-    let content = "<h4>Information!</h4>";
+  refreshMarkers() {
+    this.removeMarkers();
+    this.addMarker();
+  }
 
-    this.addInfoWindow(marker, content);
-
+  // Sets the map on all markers in the array.
+  setMapOnAll(map) {
+    for (var i = 0; i < this.markers.length; i++) {
+      this.markers[i].setMap(map);
+    }
   }
 
   addInfoWindow(marker, content){

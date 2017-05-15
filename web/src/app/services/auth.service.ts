@@ -31,7 +31,6 @@ export class AuthService {
         }
 
         this.provider.doLogin();
-
     }
 
     public doLogout() {

@@ -58,8 +58,6 @@ export class AuthenticationService {
         if (this.token != null) {
             var headers = new Headers();
             headers.append('Authorization', `Bearer ${this.token}`);
-            //noinspection TypeScriptUnresolvedFunction
-
             console.log(this.oAuthUserUrl);
             this.http.get(this.oAuthUserUrl, {headers: headers})
                 .map(res => res.json())

@@ -4,6 +4,7 @@ import {Observable} from 'rxjs/Observable';
 import 'rxjs/Rx';
 import 'rxjs/add/operator/map';
 import {Coordinate} from '../domain/coordinate';
+import { Geolocation, Device } from 'ionic-native';
 
 /*
  Generated class for the TodoService provider.
@@ -13,10 +14,24 @@ import {Coordinate} from '../domain/coordinate';
  */
 @Injectable()
 export class LocatorService {
-  todosUrl = "http://213.222.183.206:8000/api/coords"
+  // 213.222.183.206
+  todosUrl = "http://10.0.12.219:8000/api/coords"
+  longitude = 0;
+  latitude = 0;
+  self = this;
+  public coords:Coordinate[];
+
+  public getLongitude() {
+    return this.longitude;
+  }
+
+  public getLatitude() {
+    return this.latitude;
+  }
 
   constructor(public http: Http) {
     console.log('Hello Locator Provider');
+    this.self = this;
   }
 
   // Get all todos
@@ -32,13 +47,26 @@ export class LocatorService {
     return Observable.throw(error.json().error || 'Server error');
   }
 
-  // Add a todo-edit
-  public save(deviceId: any, longitude : any, latitude : any) {
+  public updateCoords(currentLongitude : number, currentLatitude) {
+    Geolocation.getCurrentPosition().then((resp) => {
+      this.longitude = resp.coords.longitude;
+      this.latitude = resp.coords.latitude;
+      currentLongitude = this.longitude;
+      currentLatitude = this.latitude;
+      this.save(Device.uuid, this.longitude, this.latitude)
+        .subscribe(data => {
+          this.self.coords = data;
+      });
+    }).catch((error) => {
+      alert('Error occured' + error);
+      console.log('Error getting location', error);
+    });
+  }
+
+  public save(deviceId: any, longitude : any, latitude : any) : Observable<Coordinate[]> {
     let newCoordinate = new Coordinate(deviceId, longitude, latitude);
     let body = JSON.stringify(newCoordinate);
-    alert('Save position invoked: ' + body);
     let headers = new Headers({'Content-Type': 'application/json'});
-
     return this.http.post(this.todosUrl, body, {headers: headers})
       .map(res => res.json())
       .catch(this.handleError);
