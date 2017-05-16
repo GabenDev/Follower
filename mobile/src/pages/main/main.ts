@@ -1,6 +1,6 @@
 import { Component, ViewChild, ElementRef } from '@angular/core';
 import { NavController } from 'ionic-angular';
-import { Facebook, FacebookLoginResponse } from 'ionic-native';
+import { Device, Facebook, FacebookLoginResponse} from 'ionic-native';
 
 import { ItemsPage } from '../items/items';
 import { Geolocation } from 'ionic-native';
@@ -11,6 +11,7 @@ import {LocatorService} from '../../providers/LocatorService';
 
 import { Http } from '@angular/http';
 import {Coordinate} from "../../domain/coordinate";
+import {CoordMarker} from "../../domain/CoordMarker";
 import {Observable} from "rxjs/Observable";
 // import {Coordinate} from '../../domain/coordinate';
 
@@ -23,6 +24,7 @@ declare var google;
 })
 export class MainPage {
   userName : string;
+  userId : string;
   longitude = 10;
   latitude = 20;
   @ViewChild('map') mapElement: ElementRef;
@@ -37,6 +39,7 @@ export class MainPage {
         Facebook.api("/me?fields=id%2Cname&access_token="+v, ['public_profile'])
         .then((profile) => {
             this.userName = profile.name;
+            this.userId = profile.id;
           })
         .catch((error) => {
             console.log("Unable to login with facebbok");
@@ -58,7 +61,7 @@ export class MainPage {
     Geolocation.getCurrentPosition().then((resp) => {
       this.longitude = resp.coords.longitude;
       this.latitude = resp.coords.latitude;
-      this.locatorService.save('Gaben-Device', this.longitude, this.latitude)
+      this.locatorService.save(Device.uuid, this.longitude, this.latitude)
         .subscribe(data => {
           this.coords = data;
           this.addMarker();
@@ -67,7 +70,6 @@ export class MainPage {
       alert('Error occured' + error);
       console.log('Error getting location', error);
     });
-    // this.refreshMarkers();
   }
 
   public addItem() {
@@ -112,16 +114,34 @@ export class MainPage {
   }
 
   addMarker(){
-    this.removeMarkers();
+    // this.removeMarkers();
+    // "graph.facebook.com/" + this.userId + "/picture"
     for (var i = 0; i < this.coords.length; i++) {
-      let marker = new google.maps.Marker({
-        map: this.map,
-        // animation: google.maps.Animation.BOUNCE,
-        position: new google.maps.LatLng(this.coords[i].latitude,this.coords[i].longitude)
-      });
-      this.markers.push(marker);
-      let content = "<h4>"+ this.coords[i].deviceId + "</h4>";
-      this.addInfoWindow(marker, content);
+
+      let currentCoordMarker = this.markers.find(x => x.coordinate.deviceId === this.coords[i].deviceId);
+
+      if(currentCoordMarker) {
+        currentCoordMarker.coordinate = this.coords[i];
+        currentCoordMarker.marker.setPosition(new google.maps.LatLng(currentCoordMarker.coordinate.latitude,currentCoordMarker.coordinate.longitude));
+        currentCoordMarker.marker.setMap(this.map);
+        currentCoordMarker.marker.setVisible(true);
+      } else {
+        // " + this.userId + "
+        // var image = "graph.facebook.com/1447312798/picture";
+        // var image = 'https://developers.google.com/maps/documentation/javascript/examples/full/images/beachflag.png';
+        // var image = '/src/img/pet.jpg';
+        var image = 'http://maps.gstatic.com/mapfiles/ridefinder-images/mm_20_green.png';
+        var marker = new google.maps.Marker({
+          map: this.map,
+          position: new google.maps.LatLng(this.coords[i].latitude,this.coords[i].longitude)
+          ,icon: image
+        });
+        let content = "<h4>Device: "+ this.coords[i].deviceId + "</h4><br/>";
+        content += "Latitude: " + this.coords[i].latitude + ", ";
+        content += "Longitude: " + this.coords[i].longitude;
+        this.addInfoWindow(marker, content);
+        this.markers.push(new CoordMarker(this.coords[i], marker));
+      }
     }
   }
 
@@ -153,6 +173,9 @@ export class MainPage {
     });
 
   }
+
+
+
 
 
 };

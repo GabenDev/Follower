@@ -1,4 +1,5 @@
 export class Coordinate {
+
   constructor(deviceId:string, longitude : number, latitude : number) {
     this.deviceId = deviceId;
     this.longitude = longitude;
@@ -9,5 +10,5 @@ export class Coordinate {
   deviceId:string;
   longitude:number;
   latitude:number;
-
+  marker:any;
 }

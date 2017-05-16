@@ -34,12 +34,11 @@
   <div *ngIf="userName">
     Logged in as {{ userName }} <button ion-button clear (click)="logout()">Logout</button> <br/>
     Longitude: {{ longitude }}, Latitude: {{ latitude }}
-    <button ion-button (click)="getCoords()"><ion-icon name="ion-refresh"></ion-icon>Refresh coords manually</button>
+    <button ion-button (click)="updateCoords()"><ion-icon name="ion-refresh"></ion-icon>Refresh coords manually</button>
     <br/>
 
   </div>
 
   <div #map id="map"></div>
-
 </ion-content>
 
