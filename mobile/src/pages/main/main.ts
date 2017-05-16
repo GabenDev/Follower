@@ -27,7 +27,7 @@ export class MainPage {
   latitude = 20;
   @ViewChild('map') mapElement: ElementRef;
   map: any;
-  todosUrl = "http://10.0.12.219:8000/api/coords";
+  todosUrl = "http://gaben.gleeze.com:8000/api/coords";
   public coords:Coordinate[];
   markers = [];
 
