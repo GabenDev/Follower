@@ -25,8 +25,8 @@ declare var google;
 export class MainPage {
   userName : string;
   userId : string;
-  longitude = 10;
-  latitude = 20;
+  longitude = 0;
+  latitude = 0;
   @ViewChild('map') mapElement: ElementRef;
   map: any;
   todosUrl = "http://gaben.gleeze.com:8000/api/coords";

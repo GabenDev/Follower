@@ -34,17 +34,10 @@ export class LocatorService {
     this.self = this;
   }
 
-  // Get all todos
   public load(): Observable<Coordinate[]> {
     return this.http.get(this.todosUrl)
       .map(res => res.json())
       .catch(this.handleError);
-  }
-
-  handleError(error) {
-    console.error(error);
-    alert("Error: " + error);
-    return Observable.throw(error.json().error || 'Server error');
   }
 
   public updateCoords(currentLongitude : number, currentLatitude) {
@@ -63,12 +56,18 @@ export class LocatorService {
     });
   }
 
-  public save(deviceId: any, longitude : any, latitude : any) : Observable<Coordinate[]> {
+  save(deviceId: any, longitude : any, latitude : any) : Observable<Coordinate[]> {
     let newCoordinate = new Coordinate(deviceId, longitude, latitude);
     let body = JSON.stringify(newCoordinate);
     let headers = new Headers({'Content-Type': 'application/json'});
     return this.http.post(this.todosUrl, body, {headers: headers})
       .map(res => res.json())
       .catch(this.handleError);
+  }
+
+  handleError(error) {
+    console.error(error);
+    alert("Error: " + error);
+    return Observable.throw(error.json().error || 'Server error');
   }
 }
