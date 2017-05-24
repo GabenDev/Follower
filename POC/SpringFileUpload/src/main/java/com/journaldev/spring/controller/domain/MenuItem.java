@@ -1,10 +1,13 @@
 package com.journaldev.spring.controller.domain;
 
+import org.springframework.web.bind.annotation.ResponseBody;
+
 import java.math.BigDecimal;
 
 /**
  * Created by Gabor_Fekete on 5/24/2017.
  */
+@ResponseBody
 public class MenuItem {
 
     private String name;

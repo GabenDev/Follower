@@ -1,11 +1,14 @@
 package com.journaldev.spring.controller.domain;
 
+import org.springframework.web.bind.annotation.ResponseBody;
+
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by Gabor_Fekete on 5/24/2017.
  */
+@ResponseBody
 public final class Category {
 
     private final String name;
