@@ -1,23 +1,31 @@
 package com.journaldev.spring.controller;
 
+import com.journaldev.spring.controller.domain.Category;
+import com.journaldev.spring.controller.domain.MenuItem;
 import com.mongodb.DB;
 import com.mongodb.MongoClient;
-import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.Row;
 import org.apache.poi.xssf.usermodel.XSSFSheet;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Iterator;
+import java.util.List;
 
 /**
  * Created by Gabor_Fekete on 5/23/2017.
  */
-public class ReadExcelDemo
+public class ReadExcelDemoHttp
 {
+    private static final XlsRowMapper<Row, MenuItem> ROW_MAPPER = new MenuItemRowMapper();
+    private static final List<Category> CATEGORIES = new ArrayList<Category>();
+
     public static void main(String[] args)
     {
+        Category currentCategory = null;
         try
         {
             MongoClient mongoClient = new MongoClient( "gaben.gleeze.com" , 27017 );
@@ -33,28 +41,23 @@ public class ReadExcelDemo
 
             //Iterate through each rows one by one
             Iterator<Row> rowIterator = sheet.iterator();
+            int i = 0;
             while (rowIterator.hasNext())
             {
-                Row row = rowIterator.next();
-                //For each row, iterate through all the columns
-                Iterator<Cell> cellIterator = row.cellIterator();
-
-                while (cellIterator.hasNext())
-                {
-                    Cell cell = cellIterator.next();
-                    //Check the cell type and format accordingly
-                    switch (cell.getCellType())
-                    {
-                        case Cell.CELL_TYPE_NUMERIC:
-                            System.out.print(cell.getNumericCellValue() + "\t");
-                            break;
-                        case Cell.CELL_TYPE_STRING:
-                            System.out.print(cell.getStringCellValue() + "\t");
-                            break;
-                    }
+                if(i++ == 0) {
+                    continue;
                 }
-                System.out.println("");
+                Row row = rowIterator.next();
+                MenuItem menuItem = ROW_MAPPER.parse(row);
+                if(menuItem.isCategory()) {
+                    currentCategory = Category.newInstance(menuItem.getName());
+                    CATEGORIES.add(currentCategory);
+                } else {
+                    currentCategory.addItem(menuItem);
+                }
             }
+            new MenuProcessor().process(CATEGORIES);
+
             file.close();
         }
         catch (Exception e)
